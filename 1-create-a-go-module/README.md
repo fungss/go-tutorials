@@ -7,3 +7,4 @@
 6. Declare map as key-value pairs in go
 7. for loop in go
 8. TDD in go, go test -v
+9. Build program executable, go list -f '{{.Target}}' to get bin path and add the package to PATH env
