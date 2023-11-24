@@ -1,0 +1,9 @@
+version: '3'
+services:
+  db:
+    build:
+      context: .
+    restart: always
+    env_file: .env
+    ports:
+    - 27017:27017
