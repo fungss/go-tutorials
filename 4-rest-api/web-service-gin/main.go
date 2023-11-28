@@ -1,5 +1,11 @@
 package main
 
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
 type album struct {
 	ID     string  `json:"id"`
 	Title  string  `json:"title"`
@@ -13,6 +19,36 @@ var albums = []album{
 	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
 }
 
-func main() {
+func getAlbums(ctx *gin.Context) {
+	ctx.IndentedJSON(http.StatusOK, albums)
+}
 
+func postAlbums(ctx *gin.Context) {
+	var newAlbum album
+
+	if err := ctx.BindJSON(&newAlbum); err != nil {
+		return
+	}
+	albums = append(albums, newAlbum)
+	ctx.IndentedJSON(http.StatusCreated, newAlbum)
+}
+
+func getAlbumByID(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	for _, album := range albums {
+		if album.ID == id {
+			ctx.IndentedJSON(http.StatusOK, album)
+			return
+		}
+	}
+	ctx.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+
+func main() {
+	router := gin.Default()
+	router.GET("/albums", getAlbums)
+	router.POST("/albums", postAlbums)
+	router.GET("/albums/:id", getAlbumByID)
+	router.Run("localhost:8080")
 }
